@@ -31,16 +31,15 @@ STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "office-ag
 
 # 优先读取本机 OpenClaw 工作区的状态文件（更贴合 AGENTS.md 的工作流）
 # 支持自动发现，减少对方手动配置成本。
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_STATE_CANDIDATES = [
-    "/root/.openclaw/workspace/star-office-ui/state.json",
-    "/root/.openclaw/workspace/state.json",
+    os.path.join(_SCRIPT_DIR, "state.json"),
     os.path.join(os.getcwd(), "state.json"),
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "state.json"),
 ]
 
 # 如果对方本地 /status 需要鉴权，可在这里填写 token（或通过环境变量 OFFICE_LOCAL_STATUS_TOKEN）
 LOCAL_STATUS_TOKEN = os.environ.get("OFFICE_LOCAL_STATUS_TOKEN", "")
-LOCAL_STATUS_URL = os.environ.get("OFFICE_LOCAL_STATUS_URL", "http://127.0.0.1:18791/status")
+LOCAL_STATUS_URL = os.environ.get("OFFICE_LOCAL_STATUS_URL", "http://127.0.0.1:19000/status")
 # 可选：直接指定本地状态文件路径（最简单方案：绕过 /status 鉴权）
 LOCAL_STATE_FILE = os.environ.get("OFFICE_LOCAL_STATE_FILE", "")
 VERBOSE = os.environ.get("OFFICE_VERBOSE", "0") in {"1", "true", "TRUE", "yes", "YES"}
