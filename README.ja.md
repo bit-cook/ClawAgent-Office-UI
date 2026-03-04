@@ -1,7 +1,8 @@
-# ✨ Star Office UI
+# Star Office UI
 
 🌐 Language: [中文](./README.md) | [English](./README.en.md) | **日本語**
 
+![Star Office UI カバー 1](docs/screenshots/readme-cover-1.jpg)
 ![Star Office UI カバー 2](docs/screenshots/readme-cover-2.jpg)
 
 複数 Agent 協調向けのピクセル・オフィス可視化ダッシュボードです。AI アシスタント（OpenClaw / 「ロブスター」）の状態をリアルタイム表示し、「誰が何をしているか」「昨日何をしたか」「オンラインかどうか」を直感的に把握できます。
@@ -44,8 +45,6 @@ python3 set_state.py syncing "進捗同期中"
 python3 set_state.py error "問題を検出、調査中"
 python3 set_state.py idle "待機中"
 ```
-
-![Star Office UI カバー 1](docs/screenshots/readme-cover-1.jpg)
 
 ---
 
@@ -290,6 +289,31 @@ Agent はステータスを能動的に更新することを推奨：
 - 美術アセット：商用不可（学習/デモ/共有用途のみ）
 
 ---
+
+
+### F) 2026-03-04 P0/P1 セキュリティ・安定性アップデート（新規）
+
+本アップデートは、**本番運用の安定性**と**状態同期の信頼性**を高めることを目的に、既存機能を維持したまま以下を実施しました。
+
+1. **P0 セキュリティ基盤**
+   - 本番モードでの安全チェックを追加（弱い secret / パスワードを拒否）
+   - Session Cookie 設定を強化
+   - デプロイ前検査 `scripts/security_check.py` を追加
+
+2. **P1 構造改善（挙動変更なし）**
+   - backend を `security_utils.py` / `memo_utils.py` / `store_utils.py` に分割
+   - `app.py` の結合度を下げ、保守性を向上
+
+3. **状態同期・UX 改善**
+   - 状態ソース読み取り優先順位を修正
+   - stale 状態の自動 `idle` 復帰を追加（偽作業中を低減）
+   - 初期表示体験を改善（スケルトン表示、非重要初期化の遅延）
+
+4. **サービス安定性修正**
+   - `star-office-ui.service`（18888）の常駐動作を統一・安定化
+   - `star-office-push.service` との連携を改善し、502 リスクを低減
+
+> 詳細は `docs/UPDATE_REPORT_2026-03-04_P0_P1.md` を参照してください。
 
 ## プロジェクト構成（簡易）
 

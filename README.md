@@ -1,5 +1,7 @@
 # Star Office UI
 
+🌐 Language: **中文** | [English](./README.en.md) | [日本語](./README.ja.md)
+
 ![Star Office UI 封面 1](docs/screenshots/readme-cover-1.jpg)
 ![Star Office UI 封面 2](docs/screenshots/readme-cover-2.jpg)
 
@@ -29,11 +31,7 @@ python3 -m pip install -r backend/requirements.txt
 # 3) 准备状态文件（首次）
 cp state.sample.json state.json
 
-# 4) （推荐）准备本地环境变量
-cp .env.example .env
-# 然后编辑 .env：至少设置 FLASK_SECRET_KEY 与 ASSET_DRAWER_PASS
-
-# 5) 启动后端
+# 4) 启动后端
 cd backend
 python3 app.py
 ```
@@ -127,14 +125,7 @@ python3 -m pip install -r backend/requirements.txt
 cp state.sample.json state.json
 ```
 
-### 3) （推荐）准备本地环境变量
-
-```bash
-cp .env.example .env
-# 编辑 .env：至少设置 FLASK_SECRET_KEY 与 ASSET_DRAWER_PASS
-```
-
-### 4) 启动后端
+### 3) 启动后端
 
 ```bash
 cd backend
@@ -150,31 +141,6 @@ python3 set_state.py writing "正在整理文档"
 python3 set_state.py syncing "同步进度中"
 python3 set_state.py error "发现问题，排查中"
 python3 set_state.py idle "待命中"
-```
-
----
-
-## 3.1、安全自检（推荐上线前执行）
-
-```bash
-python3 scripts/security_check.py
-```
-
-- 返回 `Result: OK` 才建议进入公网部署。
-- 在生产模式（`STAR_OFFICE_ENV=production`）下，请务必配置强密码：
-  - `FLASK_SECRET_KEY`（>=24 位随机字符串）
-  - `ASSET_DRAWER_PASS`（不要使用 `1234`）
-
-## 3.2、真实状态自动采集（避免手动切状态）
-
-默认推荐使用 `office-agent-push.py` 持续推送本地 `state.json`，无需每次手动改地图状态。
-
-- 优先读取：`/root/.openclaw/workspace/Star-Office-UI/state.json`
-- 若本地状态长期未更新，会自动回 idle（避免“假工作中”）
-- 可用环境变量调节过期阈值（秒）：
-
-```bash
-export OFFICE_STALE_STATE_TTL=600
 ```
 
 ---
@@ -235,8 +201,6 @@ export OFFICE_STALE_STATE_TTL=600
 
 本项目由 **Ring Hyacinth** 与 **Simon Lee** 共同创作与维护。
 
-## 9、作者社交账号
-
 - **X：Ring Hyacinth (@ring_hyacinth)**  
   https://x.com/ring_hyacinth
 - **X：Simon Lee (@simonxxoo)**  
@@ -244,290 +208,7 @@ export OFFICE_STALE_STATE_TTL=600
 
 ---
 
-## 项目结构（简版）
-
-```text
-star-office-ui/
-  backend/
-    app.py
-    requirements.txt
-    run.sh
-  frontend/
-    index.html
-    join.html
-    invite.html
-    layout.js
-    ...assets
-  docs/
-    screenshots/
-  scripts/
-    security_check.py
-  office-agent-push.py
-  set_state.py
-  state.sample.json
-  join-keys.sample.json
-  .env.example
-  SKILL.md
-  README.md
-  LICENSE
-```
-
----
-
----
-
----
-
-# Star Office UI
-
-A pixel office dashboard for multi-agent collaboration: visualize your AI assistants’ (OpenClaw / "lobster") work status in real-time, helping the team intuitively see "who is doing what, what they did yesterday, and whether they are online now."
-
-> This project is a **co-created work by Ring Hyacinth and Simon Lee**.
-
-![Star Office UI Cover 1](docs/screenshots/readme-cover-1.jpg)
-![Star Office UI Cover 2](docs/screenshots/readme-cover-2.jpg)
-
----
-
-## What is this project? (In one sentence)
-
-Star Office UI is a "multi-person collaboration status dashboard"—think of it as:
-> A real-time "pixel office dashboard": your AI assistants (and other agents you invite) automatically move to different areas based on their status (breakroom / desk / bug area), and you can also see a micro-summary of their work from yesterday.
-
----
-
-## ✨ 30-second Quick Start (Recommended)
-
-```bash
-# 1) Clone repository
-git clone https://github.com/ringhyacinth/Star-Office-UI.git
-cd Star-Office-UI
-
-# 2) Install dependencies
-python3 -m pip install -r backend/requirements.txt
-
-# 3) Initialize state file (first run)
-cp state.sample.json state.json
-
-# 4) (Recommended) prepare local env file
-cp .env.example .env
-# Then edit .env: set at least FLASK_SECRET_KEY and ASSET_DRAWER_PASS
-
-# 5) Start backend
-cd backend
-python3 app.py
-```
-
-Open: **http://127.0.0.1:18791**
-
-Try changing states (run from project root):
-```bash
-python3 set_state.py writing "Organizing documents"
-python3 set_state.py syncing "Syncing progress"
-python3 set_state.py error "Found an issue, debugging"
-python3 set_state.py idle "Standing by"
-```
-
----
-
-## I. What does this project do?
-
-Star Office UI currently provides:
-
-1. **Visualize lobster work status**
-   - States: `idle`, `writing`, `researching`, `executing`, `syncing`, `error`
-   - States map to different areas in the office and are shown with animations / bubbles.
-
-2. **"Yesterday Memo" micro-summary**
-   - A "Yesterday Memo" card in the UI.
-   - Backend reads yesterday’s (or most recent available) records from `memory/*.md` and displays them after basic privacy sanitization.
-
-3. **Support inviting other guests to join the office (feature ongoing)**
-   - Join via join key.
-   - Guests can continuously push their status to the office dashboard.
-   - Currently usable, but overall interaction and onboarding experience are still being optimized.
-
-4. **Mobile-friendly access**
-   - Mobile devices can directly open and view status (great for quick checks on the go).
-
-5. **Flexible public access options**
-   - Skill defaults to using Cloudflare Tunnel for quick public access.
-   - You can also use your own public domain / reverse proxy setup.
-
----
-
-## II. Main changes in this update
-
-This release adds/upgrades the following compared to the early base version:
-
-- Added multi-agent mechanism: `/join-agent`, `/agent-push`, `/leave-agent`, `/agents`
-- Added "Yesterday Memo" endpoint and UI: `/yesterday-memo`
-- More complete state system: supports visualization for `syncing`, `error`, etc.
-- Scene and character animation upgrade: added lots of pixel art assets (including guest roles)
-- Rewrote docs and Skill: more beginner-friendly for external programmers
-- Cleaned up release structure: removed temp files / cache / logs to lower comprehension barrier
-- Added open-source notice: code under MIT, but art assets are non-commercial
-
----
-
-## III. Quick Start
-
-### 1) Install dependencies
-
-```bash
-cd star-office-ui
-python3 -m pip install -r backend/requirements.txt
-```
-
-### 2) Initialize state file
-
-```bash
-cp state.sample.json state.json
-```
-
-### 3) (Recommended) prepare local env file
-
-```bash
-cp .env.example .env
-# Then edit .env: set at least FLASK_SECRET_KEY and ASSET_DRAWER_PASS
-```
-
-### 4) Start backend
-
-```bash
-cd backend
-python3 app.py
-```
-
-Open: `http://127.0.0.1:18791`
-
-### 4) Switch main Agent status (example)
-
-```bash
-python3 set_state.py writing "Organizing documents"
-python3 set_state.py syncing "Syncing progress"
-python3 set_state.py error "Found an issue, debugging"
-python3 set_state.py idle "Standing by"
-```
-
----
-
-## III.1 Security preflight (recommended before public deployment)
-
-```bash
-python3 scripts/security_check.py
-```
-
-- Only deploy publicly when it returns `Result: OK`.
-- In production mode (`STAR_OFFICE_ENV=production`), set strong values for:
-  - `FLASK_SECRET_KEY` (>=24 random chars)
-  - `ASSET_DRAWER_PASS` (do not use `1234`)
-
----
-
-## IV. Common APIs
-
-- `GET /health`: Health check
-- `GET /status`: Main agent status
-- `POST /set_state`: Set main agent status
-- `GET /agents`: Get multi-agent list
-- `POST /join-agent`: Guest joins
-- `POST /agent-push`: Guest pushes status
-- `POST /leave-agent`: Guest leaves
-- `GET /yesterday-memo`: Yesterday Memo
-
----
-
-## V. Art Asset Usage Notes (Please Read)
-
-### Guest character asset source
-
-Guest character animations use LimeZu’s free assets:
-- **Animated Mini Characters 2 (Platformer) [FREE]**
-- https://limezu.itch.io/animated-mini-characters-2-platform-free
-
-Please keep the source attribution and follow the original author’s license terms when redistributing / demonstrating.
-
-### Other asset notes & disclaimer (Important)
-
-- **Main character (Starmie) & homophone note:**
-  - “Starmie” is an existing character IP from Nintendo/Pokémon, **not original to this project**.
-  - This project is **non-commercial fan creation only**: this character was chosen because of a fun homophone between “Starmie” and the author’s Chinese name “海辛” (Hǎi Xīn).
-  - All fan-created content in this project is for **learning, demonstration, and idea sharing only, with no commercial use**.
-  - Nintendo, Pokémon, and “Starmie” are trademarks or registered trademarks of Nintendo/The Pokémon Company.
-  - If you plan to use any content related to this project, please use your own original characters/art assets.
-
-- **Office scene & other assets:** created by the project author team.
-
-### Commercial restriction (Important)
-
-- Code/logic may be used and modified under MIT.
-- **All art assets in this repo (including main character / scene / full pack) are NOT for commercial use.**
-- If you want to use this commercially, please create and replace with your own original art assets.
-
----
-
-## VI. Open-source License & Notice
-
-- **Code / Logic: MIT** (see `LICENSE`)
-- **Art Assets: non-commercial, for learning / demo only**
-
-Forks, idea sharing, and PRs are welcome; please strictly respect the asset usage boundaries.
-
----
-
-## VII. Looking forward to more idea sharing
-
-Feel free to extend this framework with:
-- Richer state semantics and auto-orchestration
-- Multi-room / multi-team collaboration maps
-- Task boards, timelines, auto-generated daily reports
-- More complete access control and permission systems
-
-If you make an interesting modification, please share!
-
----
-
-## VIII. Author social accounts
-
-- **X: Ring Hyacinth (@ring_hyacinth)**  
-  https://x.com/ring_hyacinth
-- **X: Simon Lee (@simonxxoo)**  
-  https://x.com/simonxxoo
-
----
-
-## Project structure (simplified)
-
-```text
-star-office-ui/
-  backend/
-    app.py
-    requirements.txt
-    run.sh
-  frontend/
-    index.html
-    join.html
-    invite.html
-    layout.js
-    ...assets
-  docs/
-    screenshots/
-  scripts/
-    security_check.py
-  office-agent-push.py
-  set_state.py
-  state.sample.json
-  join-keys.sample.json
-  .env.example
-  SKILL.md
-  README.md
-  LICENSE
-```
-
----
-
-## 10、2026-03 增量更新（在原版基础上补充）
+## 9、2026-03 增量更新（在原版基础上补充）
 
 > 本节仅记录“新增/变化”，其余内容保持原版结构不变。
 
@@ -606,39 +287,53 @@ export ASSET_DRAWER_PASS="your-strong-pass"
 - 代码逻辑：MIT
 - 美术资产：禁止商用（仅学习/演示/交流用途）
 
+
 ### F) 2026-03-04 P0/P1 安全与稳定性更新（新增）
 
-本次补丁聚焦“可上线稳定运行 + 状态同步真实性”，不减少已有功能。
+本次补丁聚焦“可上线稳定运行 + 状态同步真实性”，在不减少既有功能前提下完成以下更新：
 
 1. **P0 安全基线**
    - 增加生产模式安全校验（弱 secret / 弱口令阻止启动）
    - Session Cookie 安全参数加固
-   - `runtime-config.json` 权限收紧（best-effort `600`）
    - 新增 `scripts/security_check.py`（上线前安全自检）
 
 2. **P1 结构优化（无行为变化）**
-   - 后端拆分为：
-     - `backend/security_utils.py`
-     - `backend/memo_utils.py`
-     - `backend/store_utils.py`
-   - 降低 `app.py` 耦合度，便于后续维护
+   - 后端拆分：`security_utils.py` / `memo_utils.py` / `store_utils.py`
+   - 降低 `app.py` 耦合度，提升后续维护效率
 
-3. **状态同步修复（核心）**
-   - 修复状态源读取路径
-   - 增加 stale 自动回 `idle`
-   - 前端轮询更及时，并加强动画/视觉状态对齐
+3. **状态同步与体验优化**
+   - 修复状态源读取路径优先级
+   - stale 状态自动回 `idle`，减少“假工作中”
+   - 优化首屏加载体感（骨架屏、非关键初始化延后）
 
-4. **生图模型策略收敛**
-   - 用户侧仅保留：`nanobanana-pro` / `nanobanana-2`
-   - 补充错误细节透出，提升排查效率
-
-5. **首屏体验优化**
-   - 首页 HTML 缓存
-   - 非关键初始化延后
-   - 骨架屏替代纯黑屏等待
-
-6. **服务稳定性修复**
-   - 统一并修复 `star-office-ui.service`（18888 常驻）
-   - 保持 `star-office-push.service` 与 UI 服务联动
+4. **服务稳定性修复**
+   - 修复并统一 `star-office-ui.service` 常驻运行（18888）
+   - 与 `star-office-push.service` 联动，降低 502 风险
 
 > 详细说明见：`docs/UPDATE_REPORT_2026-03-04_P0_P1.md`
+
+## 项目结构（简版）
+
+```text
+star-office-ui/
+  backend/
+    app.py
+    requirements.txt
+    run.sh
+  frontend/
+    index.html
+    join.html
+    invite.html
+    layout.js
+    ...assets
+  docs/
+    screenshots/
+  office-agent-push.py
+  set_state.py
+  state.sample.json
+  join-keys.json
+  SKILL.md
+  README.md
+  LICENSE
+```
+
