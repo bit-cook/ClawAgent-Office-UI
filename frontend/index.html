@@ -65,6 +65,37 @@
             position: relative;
             z-index: 10;
         }
+        /* 首屏骨架：避免 Phaser 未就绪时纯黑屏 */
+        #game-skeleton {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            background: radial-gradient(ellipse at center, #2a2a45 0%, #1a1a2e 65%, #151522 100%);
+            overflow: hidden;
+        }
+        #game-skeleton::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255,255,255,0.03) 0px,
+                rgba(255,255,255,0.03) 1px,
+                transparent 1px,
+                transparent 12px
+            );
+            opacity: .6;
+        }
+        #game-skeleton .hint {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: #cbd5e1;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 0 rgba(0,0,0,.4);
+        }
         #loading-overlay {
             position: fixed;
             top: 0;
@@ -1083,6 +1114,7 @@
     
     <div id="main-stage">
         <div id="game-container">
+            <div id="game-skeleton"><div class="hint">正在进入像素办公室…</div></div>
             <div id="status-text">加载中...</div>
         </div>
         
@@ -1522,13 +1554,24 @@
         function hideLoadingOverlay() {
             setTimeout(() => {
                 if (loadingOverlay) {
-                    loadingOverlay.style.transition = 'opacity 0.5s ease';
+                    loadingOverlay.style.transition = 'opacity 0.35s ease';
                     loadingOverlay.style.opacity = '0';
                     setTimeout(() => {
                         loadingOverlay.style.display = 'none';
-                    }, 500);
+                    }, 360);
                 }
-            }, 300);
+            }, 80);
+        }
+
+        // Phaser 就绪后，移除首屏骨架，避免黑屏感
+        function hideGameSkeleton() {
+            const sk = document.getElementById('game-skeleton');
+            if (!sk) return;
+            sk.style.transition = 'opacity 0.25s ease';
+            sk.style.opacity = '0';
+            setTimeout(() => {
+                if (sk && sk.parentNode) sk.parentNode.removeChild(sk);
+            }, 260);
         }
 
         // 兜底：某些移动网络/CDN 抖动时，避免一直卡在“加载中”遮罩
@@ -3890,6 +3933,7 @@ function toggleBrokerPanel() {
 
         function create() {
             game = this;
+            hideGameSkeleton();
             officeBgSprite = this.add.image(640, 360, 'office_bg');
 
             // Place furniture: Sofa
